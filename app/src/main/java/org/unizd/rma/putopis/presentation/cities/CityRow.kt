@@ -1,4 +1,4 @@
-package org.unizd.rma.putopis.ui
+package org.unizd.rma.putopis.presentation.cities
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.unizd.rma.putopis.domain.model.City
 import org.unizd.rma.putopis.ui.theme.PutopisTheme
 
 @Composable
@@ -47,6 +48,6 @@ fun CityRow(
 @Composable
 private fun CityRowPreview() {
     PutopisTheme {
-        CityRow(city = sampleCities.first(), onClick = {})
+        CityRow(city = City(1, "Zadar", "Zadarska", 21), onClick = {})
     }
 }
