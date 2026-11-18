@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import org.unizd.rma.putopis.domain.repository.CityRepository
+import retrofit2.HttpException
 
 class CitiesViewModel(private val repository: CityRepository) : ViewModel() {
 
@@ -22,6 +24,10 @@ class CitiesViewModel(private val repository: CityRepository) : ViewModel() {
             _uiState.value = CitiesUiState.Loading
             _uiState.value = try {
                 CitiesUiState.Success(repository.getCities())
+            } catch (e: IOException) {
+                CitiesUiState.Error("Nema veze s internetom")
+            } catch (e: HttpException) {
+                CitiesUiState.Error("Server je vratio ${e.code()}")
             } catch (e: Exception) {
                 CitiesUiState.Error(e.message ?: "Nepoznata greška")
             }

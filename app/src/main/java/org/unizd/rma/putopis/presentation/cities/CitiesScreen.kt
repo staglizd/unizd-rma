@@ -21,19 +21,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.unizd.rma.putopis.domain.model.City
-import org.unizd.rma.putopis.data.repository.FakeCityRepository
+import org.unizd.rma.putopis.PutopisApp
+import org.unizd.rma.putopis.domain.model.WeatherType
 import org.unizd.rma.putopis.ui.theme.PutopisTheme
 
 /** Ulazna točka: zna za ViewModel. Ekran ispod ne zna ništa o njemu. */
 @Composable
 fun CitiesRoute(
     onCityClick: (Int) -> Unit,
-    viewModel: CitiesViewModel = viewModel { CitiesViewModel(FakeCityRepository()) },
+    viewModel: CitiesViewModel = run {
+        val container = (LocalContext.current.applicationContext as PutopisApp).container
+        viewModel { CitiesViewModel(container.cityRepository) }
+    },
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     CitiesScreen(state = state, onCityClick = onCityClick, onRetry = viewModel::load)
@@ -123,7 +128,10 @@ private fun CitiesScreenSuccessPreview() {
     PutopisTheme {
         CitiesScreen(
             state = CitiesUiState.Success(
-                listOf(City(1, "Zadar", "Zadarska", 21), City(2, "Split", "Splitsko-dalmatinska", 24)),
+                listOf(
+                    City(1, "Zadar", "Zadarska", 21.0, 55, 8.0, WeatherType.CLEAR, emptyList()),
+                    City(2, "Split", "Splitsko-dalmatinska", 24.0, 60, 12.0, WeatherType.CLOUDY, emptyList()),
+                ),
             ),
             onCityClick = {},
             onRetry = {},
