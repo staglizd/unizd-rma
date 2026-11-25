@@ -21,13 +21,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.unizd.rma.putopis.domain.model.City
-import org.unizd.rma.putopis.PutopisApp
 import org.unizd.rma.putopis.domain.model.WeatherType
 import org.unizd.rma.putopis.ui.theme.PutopisTheme
 
@@ -35,10 +33,7 @@ import org.unizd.rma.putopis.ui.theme.PutopisTheme
 @Composable
 fun CitiesRoute(
     onCityClick: (Int) -> Unit,
-    viewModel: CitiesViewModel = run {
-        val container = (LocalContext.current.applicationContext as PutopisApp).container
-        viewModel { CitiesViewModel(container.cityRepository) }
-    },
+    viewModel: CitiesViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     CitiesScreen(state = state, onCityClick = onCityClick, onRetry = viewModel::load)

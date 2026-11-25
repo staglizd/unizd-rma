@@ -22,16 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import kotlin.math.roundToInt
-import org.unizd.rma.putopis.PutopisApp
 import org.unizd.rma.putopis.domain.model.City
 import org.unizd.rma.putopis.domain.model.DayForecast
 import org.unizd.rma.putopis.domain.model.WeatherType
@@ -40,11 +38,11 @@ import org.unizd.rma.putopis.ui.theme.PutopisTheme
 
 @Composable
 fun CityDetailRoute(id: Int, onBack: () -> Unit) {
-    val container = (LocalContext.current.applicationContext as PutopisApp).container
-    // key: svaki grad dobiva vlastiti ViewModel (inače bi svi dijelili prvi stvoreni)
-    val viewModel: CityDetailViewModel = viewModel(key = "city-$id") {
-        CityDetailViewModel(id, container.cityRepository)
-    }
+    // Hilt stvara ViewModel i ubacuje id kroz tvornicu (assisted injection);
+    // ViewModel je vezan uz ovaj zapis na back stacku, pa svaki grad dobiva svoj
+    val viewModel = hiltViewModel<CityDetailViewModel, CityDetailViewModel.Factory>(
+        creationCallback = { factory -> factory.create(id) },
+    )
     val state by viewModel.state.collectAsStateWithLifecycle()
     CityDetailScreen(state = state, onBack = onBack)
 }

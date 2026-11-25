@@ -1,12 +1,15 @@
 package org.unizd.rma.putopis.data.repository
 
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.unizd.rma.putopis.data.mapper.toDomain
 import org.unizd.rma.putopis.data.remote.WeatherApi
 import org.unizd.rma.putopis.domain.model.City
 import org.unizd.rma.putopis.domain.repository.CityRepository
 
 /** Stvarna implementacija sučelja iz domain sloja: podaci s interneta. */
-class CityRepositoryImpl(private val api: WeatherApi) : CityRepository {
+@Singleton
+class CityRepositoryImpl @Inject constructor(private val api: WeatherApi) : CityRepository {
 
     private class Location(val id: Int, val name: String, val region: String, val lat: Double, val lon: Double)
 
